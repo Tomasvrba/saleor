@@ -24,6 +24,9 @@ from .forms import CustomerNoteForm, PasswordForm, PaymentDeleteForm, PaymentsFo
 from .models import Order
 from .utils import attach_order_to_user, check_order_status
 
+from ..checkout.utils import get_or_empty_db_checkout
+from ..checkout.models import Checkout
+
 logger = logging.getLogger(__name__)
 
 PAYMENT_TEMPLATE = "order/payment/%s.html"
@@ -150,17 +153,20 @@ def cancel_payment(request, order):
         return redirect("order:payment", token=order.token)
     return HttpResponseForbidden()
 
-
+@get_or_empty_db_checkout(checkout_queryset=Checkout.objects.for_display())
 @csrf_exempt
-def payment_success(request, token):
+def payment_success(request, checkout, token):
     """Receive request from payment gateway after paying for an order.
 
     Redirects user to payment success.
     All post data and query strings are dropped.
     """
     url = reverse("order:checkout-success", kwargs={"token": token})
-    return redirect(url)
 
+    # remove checkout after order has been paid
+    checkout.delete()
+
+    return redirect(url)
 
 def checkout_success(request, token):
     """Redirect user after placing an order.

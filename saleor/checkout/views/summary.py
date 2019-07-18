@@ -54,9 +54,6 @@ def _handle_order_placement(request, checkout):
     # Push the order data into the database
     order = create_order(checkout=checkout, order_data=order_data, user=request.user)
 
-    # remove checkout after order is created
-    checkout.delete()
-
     # Redirect the user to the payment page
     return redirect("order:payment", token=order.token)
 
