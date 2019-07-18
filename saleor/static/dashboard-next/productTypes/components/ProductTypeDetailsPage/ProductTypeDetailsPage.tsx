@@ -112,7 +112,7 @@ const ProductTypeDetailsPage: React.StatelessComponent<
       onSubmit={onSubmit}
       confirmLeave
     >
-      {({ change, data, hasChanged, submit }) => (
+      {({ change, data, errors: formErrors, hasChanged, submit }) => (
         <Container>
           <AppHeader onBack={onBack}>{i18n.t("Product Types")}</AppHeader>
           <PageHeader title={pageTitle} />
@@ -121,6 +121,7 @@ const ProductTypeDetailsPage: React.StatelessComponent<
               <ProductTypeDetails
                 data={data}
                 disabled={disabled}
+                errors={formErrors}
                 onChange={change}
               />
               <CardSpacer />

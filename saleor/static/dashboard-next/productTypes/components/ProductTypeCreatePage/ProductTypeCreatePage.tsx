@@ -8,8 +8,9 @@ import Form from "@saleor/components/Form";
 import Grid from "@saleor/components/Grid";
 import PageHeader from "@saleor/components/PageHeader";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
-import i18n from "../../../i18n";
-import { TaxRateType, WeightUnitsEnum } from "../../../types/globalTypes";
+import i18n from "@saleor/i18n";
+import { UserError } from "@saleor/types";
+import { TaxRateType, WeightUnitsEnum } from "@saleor/types/globalTypes";
 import ProductTypeDetails from "../ProductTypeDetails/ProductTypeDetails";
 import ProductTypeShipping from "../ProductTypeShipping/ProductTypeShipping";
 import ProductTypeTaxes from "../ProductTypeTaxes/ProductTypeTaxes";
@@ -23,10 +24,7 @@ export interface ProductTypeForm {
 }
 
 export interface ProductTypeCreatePageProps {
-  errors: Array<{
-    field: string;
-    message: string;
-  }>;
+  errors: UserError[];
   defaultWeightUnit: WeightUnitsEnum;
   disabled: boolean;
   pageTitle: string;
@@ -60,7 +58,7 @@ const ProductTypeCreatePage: React.StatelessComponent<
       onSubmit={onSubmit}
       confirmLeave
     >
-      {({ change, data, hasChanged, submit }) => (
+      {({ change, data, errors: formErrors, hasChanged, submit }) => (
         <Container>
           <AppHeader onBack={onBack}>{i18n.t("Product Types")}</AppHeader>
           <PageHeader title={pageTitle} />
@@ -69,6 +67,7 @@ const ProductTypeCreatePage: React.StatelessComponent<
               <ProductTypeDetails
                 data={data}
                 disabled={disabled}
+                errors={formErrors}
                 onChange={change}
               />
             </div>
